@@ -39,9 +39,8 @@ export function AccessCard() {
         onMouseLeave={handleMouseLeave}
         className="card-hover-shimmer-parent relative w-full max-w-[260px] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.15)] cursor-pointer"
         style={{
-          transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) ${
-            isHovered ? 'translateY(-2px)' : ''
-          }`,
+          transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) ${isHovered ? 'translateY(-2px)' : ''
+            }`,
           aspectRatio: '3 / 4',
           '--mouse-x': `${shimmer.x}%`,
           '--mouse-y': `${shimmer.y}%`,
@@ -89,7 +88,7 @@ export function AccessCard() {
           <div className="mt-[20px] space-y-2">
             <div>
               <p className="text-[7.5px] font-mono uppercase tracking-[0.08em] text-white/40">Role</p>
-              <p className="text-[10px] font-sans font-semibold text-white">Frontend Developer</p>
+              <p className="text-[10px] font-sans font-semibold text-white">Full Stack Developer</p>
             </div>
             <div>
               <p className="text-[7.5px] font-mono uppercase tracking-[0.08em] text-white/40">Location</p>
