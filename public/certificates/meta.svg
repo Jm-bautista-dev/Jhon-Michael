@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" fill="none">
+  <rect width="800" height="560" fill="#f5f3ff"/>
+  <rect x="24" y="24" width="752" height="512" rx="12" fill="#fff" stroke="#e2e8f0" stroke-width="2"/>
+  <rect x="24" y="24" width="752" height="8" rx="4" fill="#0668E1"/>
+  <text x="400" y="110" text-anchor="middle" font-family="system-ui,sans-serif" font-size="13" fill="#64748b" letter-spacing="2">COURSERA � META</text>
+  <text x="400" y="200" text-anchor="middle" font-family="system-ui,sans-serif" font-size="32" font-weight="700" fill="#0f172a">Front-End Developer</text>
+  <text x="400" y="240" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#475569">Professional Certificate</text>
+  <line x1="200" y1="280" x2="600" y2="280" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="400" y="330" text-anchor="middle" font-family="system-ui,sans-serif" font-size="16" fill="#64748b">Completed by</text>
+  <text x="400" y="380" text-anchor="middle" font-family="system-ui,sans-serif" font-size="28" font-weight="600" fill="#0f172a">Jordan Hayes</text>
+  <text x="400" y="440" text-anchor="middle" font-family="system-ui,sans-serif" font-size="14" fill="#94a3b8">August 2022</text>
+  <rect x="330" y="468" width="140" height="40" rx="8" fill="#0668E1"/>
+  <text x="400" y="494" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#fff">META CERTIFIED</text>
+</svg>
