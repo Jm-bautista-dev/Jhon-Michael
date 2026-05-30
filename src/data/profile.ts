@@ -14,7 +14,7 @@ export const profile: Profile = {
   title: 'AI \\ Web Developer \\ Freelancer',
   location: 'Laguna, Philippines',
   tagline: 'AI \\ Web Developer \\ Freelancer',
-  avatar: '/Avatar/myavatar.jpg',
+  avatar: 'Avatar/myavatar.jpg',
   status: 'available',
   statusLabel: 'Open to opportunities',
   highlightBadge: '2nd Place Winner - Cybersecurity CCSLYMPICS 2026',

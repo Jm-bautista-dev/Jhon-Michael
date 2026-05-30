@@ -53,13 +53,24 @@ export function ProjectMediaCarousel({ images, alt, autoPlay = false }: ProjectM
 
   const current = images[index]
 
+  const getImageUrl = (path: string) => {
+    if (!path) return ''
+    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
+      return path
+    }
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path
+    const base = import.meta.env.BASE_URL
+    const formattedBase = base.endsWith('/') ? base : `${base}/`
+    return `${formattedBase}${cleanPath}`
+  }
+
   return (
     <>
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-card-dark sm:aspect-[16/9]">
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
-            src={current}
+            src={getImageUrl(current)}
             alt={`${alt} screenshot ${index + 1}`}
             loading="lazy"
             decoding="async"
@@ -146,7 +157,7 @@ export function ProjectMediaCarousel({ images, alt, autoPlay = false }: ProjectM
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.25, ease: easeOut }}
-                src={current}
+                src={getImageUrl(current)}
                 alt={`${alt} screenshot fullscreen`}
                 onClick={(e) => e.stopPropagation()}
                 className="max-h-[85vh] max-w-[95vw] rounded-xl object-contain shadow-2xl select-none"

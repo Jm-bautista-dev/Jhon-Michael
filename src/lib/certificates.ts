@@ -1,6 +1,8 @@
 /** Build a URL-safe path for files in public/certificates/ */
 export function certificatePath(filename: string) {
-  return `/certificates/${encodeURIComponent(filename)}`
+  const base = import.meta.env.BASE_URL
+  const formattedBase = base.endsWith('/') ? base : `${base}/`
+  return `${formattedBase}certificates/${encodeURIComponent(filename)}`
 }
 
 export function isPdfAsset(url: string) {
