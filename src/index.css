@@ -220,23 +220,24 @@ html.dark .halftone-wide {
   pointer-events: none;
 }
 
-/* ── Theme Switcher ── */
+/* ── Theme Switcher (sidebar) ── */
 .theme-switch {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 2.5px;
+  gap: 1px;
+  padding: 2px;
+  height: 30px;
+  box-sizing: border-box;
   border: 1px solid rgb(var(--g200));
   border-radius: 9999px;
-  background: rgb(var(--bg));
 }
 
 .theme-opt {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.45rem;
-  height: 1.45rem;
+  width: 1.35rem;
+  height: 1.35rem;
   border-radius: 9999px;
   color: rgb(var(--g400));
   transition: color 0.2s, background-color 0.2s;

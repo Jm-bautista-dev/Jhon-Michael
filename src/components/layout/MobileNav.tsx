@@ -276,11 +276,12 @@ export function MobileNav({
 
             {/* Theme & sound */}
             <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/10 flex items-center justify-between">
-              <div className="theme-switch dark:border-white/10">
+              <div className="theme-switch dark:border-white/10" role="group" aria-label="Theme">
                 <button
                   type="button"
                   onClick={() => handleSetTheme('system')}
-                  className={`theme-opt ${theme === 'system' ? 'is-active dark:bg-white/15 dark:text-white' : ''}`}
+                  className={`theme-opt ${theme === 'system' ? 'is-active' : ''}`}
+                  title="System theme"
                 >
                   <svg viewBox="0 0 24 24" fill="none">
                     <rect x="3" y="4" width="18" height="13" rx="2" stroke="currentColor" strokeWidth="1.7" />
@@ -290,7 +291,8 @@ export function MobileNav({
                 <button
                   type="button"
                   onClick={() => handleSetTheme('light')}
-                  className={`theme-opt ${theme === 'light' ? 'is-active dark:bg-white/15 dark:text-white' : ''}`}
+                  className={`theme-opt ${theme === 'light' ? 'is-active' : ''}`}
+                  title="Light theme"
                 >
                   <svg viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
@@ -300,7 +302,8 @@ export function MobileNav({
                 <button
                   type="button"
                   onClick={() => handleSetTheme('dark')}
-                  className={`theme-opt ${theme === 'dark' ? 'is-active dark:bg-white/15 dark:text-white' : ''}`}
+                  className={`theme-opt ${theme === 'dark' ? 'is-active' : ''}`}
+                  title="Dark theme"
                 >
                   <svg viewBox="0 0 24 24" fill="none">
                     <path d="M20 13.6A8 8 0 1 1 10.4 4a6.2 6.2 0 0 0 9.6 9.6z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
@@ -311,25 +314,44 @@ export function MobileNav({
               <button
                 type="button"
                 onClick={handleToggleSound}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300"
+                className="inline-flex h-[30px] w-[30px] items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-black dark:border-white/10 dark:text-gray-400 dark:hover:border-white/30 dark:hover:text-white cursor-pointer transition-colors"
+                title={soundEnabled ? 'Sounds on' : 'Sounds off'}
+                aria-label="Toggle interface sounds"
+                aria-pressed={soundEnabled}
               >
-                {soundEnabled ? '🔊' : '🔇'}
+                {soundEnabled ? (
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 10v4h3l4 3V7L8 10H5zM16 9a4 4 0 010 6M18.5 6.5a7.5 7.5 0 010 11" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 10v4h3l4 3V7L8 10H5zM16 10l5 5M21 10l-5 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
               </button>
             </div>
 
-            <p className="text-xs text-gray-400">
-              Reach me at{' '}
-              <button
-                type="button"
-                onClick={() => {
+            <div className="mt-4">
+              <p className="text-[12px] leading-relaxed text-gray-400">
+                For work, collabs &amp; everything else, reach me at
+              </p>
+              <a
+                href={`mailto:${email}`}
+                onClick={(e) => {
+                  e.preventDefault()
                   setIsOpen(false)
                   onOpenEmail()
                 }}
-                className="underline text-black dark:text-white"
+                className="mt-1.5 inline-flex w-fit items-center gap-2 font-mono text-[12px] font-normal tracking-tight text-black hover:text-gray-500 dark:text-white dark:hover:text-gray-400 cursor-pointer transition-colors"
+                title={`Send email to ${email}`}
               >
-                {email}
-              </button>
-            </p>
+                <svg viewBox="0 0 24 24" fill="none" className="h-[1.15em] w-[1.15em] shrink-0">
+                  <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
+                  <path d="M4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="truncate">{email}</span>
+              </a>
+            </div>
           </div>
         </div>
       )}

@@ -111,7 +111,7 @@ export function DashboardLayout() {
       />
 
       {/* Main Content Area */}
-      <main id="top" className="relative z-10 lg:pl-56">
+      <main id="top" className="relative z-10 lg:pl-64">
         <div className="mx-auto max-w-2xl px-6">
 
           {/* ── Hero Section ── */}

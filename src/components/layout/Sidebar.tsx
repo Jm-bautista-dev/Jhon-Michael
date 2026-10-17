@@ -65,7 +65,7 @@ export function Sidebar({
   return (
     <nav
       data-guide="sidebar"
-      className="fixed inset-y-0 left-0 z-50 hidden w-56 flex-col border-r border-gray-200 bg-white px-7 py-8 lg:flex dark:border-white/10 dark:bg-[#0c0c0f]"
+      className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col border-r border-gray-200 bg-white px-7 py-8 lg:flex dark:border-white/10 dark:bg-[#0c0c0f]"
     >
       {/* Brand logo */}
       <a
@@ -306,7 +306,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => handleSetTheme('system')}
-              className={`theme-opt ${theme === 'system' ? 'is-active dark:bg-white/15 dark:text-white' : ''}`}
+              className={`theme-opt ${theme === 'system' ? 'is-active' : ''}`}
               title="System theme"
             >
               <svg viewBox="0 0 24 24" fill="none">
@@ -317,7 +317,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => handleSetTheme('light')}
-              className={`theme-opt ${theme === 'light' ? 'is-active dark:bg-white/15 dark:text-white' : ''}`}
+              className={`theme-opt ${theme === 'light' ? 'is-active' : ''}`}
               title="Light theme"
             >
               <svg viewBox="0 0 24 24" fill="none">
@@ -328,7 +328,7 @@ export function Sidebar({
             <button
               type="button"
               onClick={() => handleSetTheme('dark')}
-              className={`theme-opt ${theme === 'dark' ? 'is-active dark:bg-white/15 dark:text-white' : ''}`}
+              className={`theme-opt ${theme === 'dark' ? 'is-active' : ''}`}
               title="Dark theme"
             >
               <svg viewBox="0 0 24 24" fill="none">
@@ -341,9 +341,10 @@ export function Sidebar({
           <button
             type="button"
             onClick={handleToggleSound}
-            className="inline-flex h-7.5 w-7.5 items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-black dark:border-white/10 dark:text-gray-400 dark:hover:border-white/30 dark:hover:text-white cursor-pointer transition-colors"
+            className="inline-flex h-[30px] w-[30px] items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-gray-300 hover:text-black dark:border-white/10 dark:text-gray-400 dark:hover:border-white/30 dark:hover:text-white cursor-pointer transition-colors"
             title={soundEnabled ? 'Sounds on' : 'Sounds off'}
             aria-label="Toggle interface sounds"
+            aria-pressed={soundEnabled}
           >
             {soundEnabled ? (
               <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
@@ -360,17 +361,21 @@ export function Sidebar({
         <p className="text-[12px] leading-relaxed text-gray-400">
           For work, collabs &amp; everything else, reach me at
         </p>
-        <button
-          type="button"
-          onClick={onOpenEmail}
-          className="mt-1.5 inline-flex w-fit items-center gap-2 font-mono text-[13px] text-black hover:text-gray-500 dark:text-white dark:hover:text-gray-400 cursor-pointer transition-colors"
+        <a
+          href={`mailto:${email}`}
+          onClick={(e) => {
+            e.preventDefault()
+            onOpenEmail()
+          }}
+          className="mt-1.5 inline-flex w-fit items-center gap-2 font-mono text-[12px] font-normal tracking-tight text-black hover:text-gray-500 dark:text-white dark:hover:text-gray-400 cursor-pointer transition-colors"
+          title={`Send email to ${email}`}
         >
           <svg viewBox="0 0 24 24" fill="none" className="h-[1.15em] w-[1.15em] shrink-0">
             <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.6" />
             <path d="M4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          {email}
-        </button>
+          <span className="truncate">{email}</span>
+        </a>
       </div>
     </nav>
   )
