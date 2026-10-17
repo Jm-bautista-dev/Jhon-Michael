@@ -28,7 +28,7 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
   const [isPromptVisible, setIsPromptVisible] = useState(() => {
     try {
       if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
-        return sessionStorage.getItem('portfolio_tour_seen') === '1' && sessionStorage.getItem('portfolio_tour_prompt') !== 'off'
+        return sessionStorage.getItem('portfolio_tour_prompt') !== 'off'
       }
     } catch (e) {
       void e
@@ -48,6 +48,33 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
 
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+  const stopTour = useCallback(() => {
+    isCancelledRef.current = true
+    setCursorVisible(false)
+    setIsRunning(false)
+    onReleaseGaze?.()
+  }, [onReleaseGaze])
+
+  // Cancel immediately if the user touches the mouse, scrolls, or presses Escape
+  useEffect(() => {
+    if (!isRunning) return
+
+    const handleUserInterrupt = (e: Event) => {
+      if (e.type === 'keydown' && (e as KeyboardEvent).key !== 'Escape') return
+      stopTour()
+    }
+
+    window.addEventListener('wheel', handleUserInterrupt, { passive: true })
+    window.addEventListener('pointerdown', handleUserInterrupt, { passive: true })
+    window.addEventListener('keydown', handleUserInterrupt)
+
+    return () => {
+      window.removeEventListener('wheel', handleUserInterrupt)
+      window.removeEventListener('pointerdown', handleUserInterrupt)
+      window.removeEventListener('keydown', handleUserInterrupt)
+    }
+  }, [isRunning, stopTour])
+
   const typeMessage = useCallback(async (text: string) => {
     setIsTalking(true)
     setIsTyping(true)
@@ -65,12 +92,13 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
     }
 
     setIsTyping(false)
-    await sleep(1400)
+    await sleep(1500)
+    if (isCancelledRef.current) return
     setIsTalking(false)
     setBubbleText('')
   }, [])
 
-  const glideTo = useCallback(async (targetX: number, targetY: number, duration = 600) => {
+  const glideTo = useCallback(async (targetX: number, targetY: number, duration = 650) => {
     const startX = cursorPosRef.current.x < 0 ? window.innerWidth + 20 : cursorPosRef.current.x
     const startY = cursorPosRef.current.y < 0 ? window.innerHeight * 0.5 : cursorPosRef.current.y
     const startTime = performance.now()
@@ -103,7 +131,6 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
     if (window.innerWidth < 1024) return
     isCancelledRef.current = false
     setIsRunning(true)
-    setIsPromptVisible(false)
     setCursorVisible(true)
 
     // Initial enter from right
@@ -120,17 +147,17 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
         if (el) {
           const rect = el.getBoundingClientRect()
           if (step.at === 'above') {
-            targetPos = { x: rect.left + 12, y: rect.top - 20 }
+            targetPos = { x: rect.left + 24, y: rect.top - 20 }
           } else if (step.at === 'below') {
             targetPos = { x: rect.left + rect.width / 2, y: rect.bottom + 8 }
           } else {
-            targetPos = { x: rect.right + 12, y: rect.top + rect.height / 2 }
+            targetPos = { x: rect.right + 20, y: rect.top + rect.height / 2 }
           }
         }
       }
 
       // Check boundary flip
-      const placeUp = targetPos.y > window.innerHeight * 0.65
+      const placeUp = targetPos.y > window.innerHeight * 0.7
       const placeLeft = targetPos.x > window.innerWidth * 0.65
       if (placeUp && placeLeft) setBubblePlacement('up-left')
       else if (placeUp) setBubblePlacement('up')
@@ -140,30 +167,26 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
       await glideTo(targetPos.x, targetPos.y, 650)
       await sleep(150)
       await typeMessage(step.text)
-      await sleep(400)
+      await sleep(350)
     }
 
     // Exit gracefully to right edge
-    await glideTo(window.innerWidth + 80, window.innerHeight * 0.35, 700)
+    if (!isCancelledRef.current) {
+      await glideTo(window.innerWidth + 90, window.innerHeight * 0.35, 700)
+    }
     setCursorVisible(false)
     setIsRunning(false)
     onReleaseGaze?.()
-
-    try {
-      sessionStorage.setItem('portfolio_tour_seen', '1')
-    } catch (e) {
-      void e
-    }
-    setIsPromptVisible(true)
   }, [glideTo, typeMessage, onReleaseGaze])
 
+  // Only auto-run if explicitly requested via ?tour=true in URL,
+  // otherwise visitors browse peacefully and can click "take the tour again"
   useEffect(() => {
     try {
-      const seen = sessionStorage.getItem('portfolio_tour_seen')
-      if (!seen && window.innerWidth >= 1024) {
+      if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('tour')) {
         const timer = setTimeout(() => {
           runTour()
-        }, 1200)
+        }, 800)
         return () => clearTimeout(timer)
       }
     } catch (e) {
@@ -211,27 +234,27 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
             />
           </svg>
 
-          {/* Name Tag & Speech Bubble */}
+          {/* Name Tag & Properly-Proportioned Speech Bubble */}
           <div
-            className={`absolute left-0 top-0 inline-flex flex-col items-start bg-black text-white dark:bg-white dark:text-black shadow-[0_10px_24px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 ${
+            className={`absolute left-0 top-0 w-max min-w-[180px] max-w-[280px] flex flex-col items-start px-3.5 py-2.5 bg-black text-white dark:bg-white dark:text-black shadow-[0_12px_28px_-10px_rgba(0,0,0,0.45)] transition-all duration-300 ${
               bubblePlacement === 'up'
-                ? 'translate-x-4 -translate-y-[calc(100%+2px)] rounded-[15px_15px_15px_6px] p-2'
+                ? 'translate-x-4 -translate-y-[calc(100%+8px)] rounded-[16px_16px_16px_6px]'
                 : bubblePlacement === 'left'
-                ? '-translate-x-[calc(100%+2px)] translate-y-5 rounded-[15px_6px_15px_15px] p-2'
+                ? '-translate-x-[calc(100%+8px)] translate-y-5 rounded-[16px_6px_16px_16px]'
                 : bubblePlacement === 'up-left'
-                ? '-translate-x-[calc(100%+2px)] -translate-y-[calc(100%+2px)] rounded-[15px_15px_6px_15px] p-2'
-                : 'translate-x-4 translate-y-5 rounded-[6px_15px_15px_15px] p-2'
+                ? '-translate-x-[calc(100%+8px)] -translate-y-[calc(100%+8px)] rounded-[16px_16px_6px_16px]'
+                : 'translate-x-4 translate-y-5 rounded-[6px_16px_16px_16px]'
             }`}
           >
-            <span className={`font-sans text-[11.5px] font-semibold tracking-wide ${isTalking ? 'opacity-60' : 'opacity-100'}`}>
+            <span className="whitespace-nowrap font-sans text-[11px] font-semibold tracking-wider uppercase opacity-65">
               Jhon Michael
             </span>
 
             {isTalking && (
-              <div className="relative mt-1 max-w-60 font-mono text-[12.5px] leading-snug">
+              <div className="mt-1.5 w-full font-mono text-[12.5px] leading-relaxed whitespace-normal break-words">
                 <span>{bubbleText}</span>
                 {isTyping && (
-                  <span className="inline-block h-3 w-1 bg-white dark:bg-black ml-0.5 animate-pulse" />
+                  <span className="inline-block h-3.5 w-1 bg-current ml-1 animate-pulse align-middle" />
                 )}
               </div>
             )}
