@@ -1,4 +1,3 @@
-import { ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { cn } from '../../lib/cn'
 
@@ -11,12 +10,12 @@ export function BackLink({ className }: BackLinkProps) {
     <Link
       to="/"
       className={cn(
-        'group inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground',
+        'group inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white transition-colors',
         className,
       )}
     >
-      <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-      Back to Home
+      <span>←</span>
+      <span>back to profile</span>
     </Link>
   )
 }

@@ -1,411 +1,633 @@
-import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import {
-  ChevronRight,
-  Mail,
-  Compass,
-  Briefcase,
-  Trophy
-} from 'lucide-react'
-import {
-  profile,
-  skillCategories,
-  recentProjects,
-  certifications,
-  recommendations,
-  experience
-} from '../../data/profile'
-import { ProfileHeader } from '../profile/ProfileHeader'
-import { AccessCard } from '../profile/AccessCard'
-import { ProjectModal } from '../projects/ProjectModal'
+import { useState } from 'react'
+import { profile, experience, recommendations } from '../../data/profile'
+import { certifications } from '../../data/certifications'
+import { HalftoneBackdrop } from './HalftoneBackdrop'
+import { Sidebar } from './Sidebar'
+import { MobileNav } from './MobileNav'
+import { ProfileGaze } from './ProfileGaze'
+import { GuidedCursor } from './GuidedCursor'
+import { ProjectDeck } from '../projects/ProjectDeck'
+import { EmailModal } from '../modals/EmailModal'
+import { CommunityModal } from '../modals/CommunityModal'
+import { HackathonsModal } from '../modals/HackathonsModal'
+import { AskOverlay } from '../modals/AskOverlay'
+import { TypingTestOverlay } from '../modals/TypingTestOverlay'
+import { CommunityChatOverlay } from '../modals/CommunityChatOverlay'
+import { GearModal } from '../modals/GearModal'
+import { CollabsModal } from '../modals/CollabsModal'
+import { ConsultingModal } from '../modals/ConsultingModal'
+import { ResourcesModal } from '../modals/ResourcesModal'
 import { CertificationModal } from '../certifications/CertificationModal'
-import { ContactModal } from '../ui/ContactModal'
-import type { Project, Certification } from '../../types'
-import { PageShell } from './PageShell'
+import type { Certification } from '../../types'
+import { soundManager } from '../../lib/sounds'
 
 export function DashboardLayout() {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [isEmailOpen, setIsEmailOpen] = useState(false)
+  const [isCommunityOpen, setIsCommunityOpen] = useState(false)
+  const [isHackathonsOpen, setIsHackathonsOpen] = useState(false)
+  const [isAskOpen, setIsAskOpen] = useState(false)
+  const [isTypingOpen, setIsTypingOpen] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [isGearOpen, setIsGearOpen] = useState(false)
+  const [isCollabsOpen, setIsCollabsOpen] = useState(false)
+  const [isConsultingOpen, setIsConsultingOpen] = useState(false)
+  const [isResourcesOpen, setIsResourcesOpen] = useState(false)
+  const [guidePos, setGuidePos] = useState<{ x: number; y: number } | null>(null)
   const [selectedCert, setSelectedCert] = useState<Certification | null>(null)
-  const [activeRec, setActiveRec] = useState(0)
-  const [showContact, setShowContact] = useState(false)
 
-  // Auto-rotate recommendations every 6.5 seconds
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveRec((prev) => (prev + 1) % recommendations.length)
-    }, 6500)
-    return () => clearInterval(timer)
-  }, [])
+  const blogPosts = [
+    {
+      id: '1',
+      title: 'From Hackathons to Building Capstone Systems',
+      summary: 'Building high-stress hackathon prototypes gave me the speed and architectural instincts needed to lead real-world capstone development.',
+      date: 'Oct 2026',
+    },
+    {
+      id: '2',
+      title: 'Building Maki Desu: POS & Inventory with Real-Time Analytics',
+      summary: 'Deep-dive into designing database transactions, automatic stock deductions, sales summaries, and forecasting for retail.',
+      date: 'Sep 2026',
+    },
+    {
+      id: '3',
+      title: 'Why Cybersecurity and Full-Stack Go Hand in Hand',
+      summary: 'Writing clean code is half the battle; understanding network vulnerabilities, input sanitation, and auth flows is what makes it resilient.',
+      date: 'Aug 2026',
+    },
+  ]
 
-  const currentRecommendation = recommendations[activeRec]
+  const stackSkills = [
+    'TypeScript',
+    'React',
+    'Next.js',
+    'Node.js',
+    'Python',
+    'Flask',
+    'PHP',
+    'Laravel',
+    'MySQL',
+    'Tailwind CSS',
+    'Docker',
+    'REST APIs',
+    'Cybersecurity',
+    'Chart.js',
+  ]
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      className="min-h-svh bg-surface-muted dark:bg-[#09090b]"
-    >
-      <PageShell>
-        {/* Top Profile Header */}
-        <div className="mb-4">
-          <ProfileHeader profile={profile} onContactClick={() => setShowContact(true)} />
-        </div>
+    <div className="relative min-h-screen bg-white font-sans text-black antialiased dark:bg-[#0c0c0f] dark:text-[#f4f4f5]">
+      {/* Ambient Halftone Texture Background */}
+      <HalftoneBackdrop />
 
-        {/* 6-Column Bento Grid Container */}
-        <section className="grid grid-cols-1 md:grid-cols-6 gap-2">
+      {/* Fixed Left Sidebar (lg+) */}
+      <Sidebar
+        email={profile.email}
+        onOpenAsk={() => setIsAskOpen(true)}
+        onOpenTyping={() => setIsTypingOpen(true)}
+        onOpenChat={() => setIsChatOpen(true)}
+        onOpenEmail={() => setIsEmailOpen(true)}
+        onOpenGear={() => setIsGearOpen(true)}
+        onOpenCollabs={() => setIsCollabsOpen(true)}
+        onOpenConsulting={() => setIsConsultingOpen(true)}
+        onOpenResources={() => setIsResourcesOpen(true)}
+      />
 
-          {/* Card 1: About Section (col-span-4) */}
-          <div className="bento-card p-5 col-span-1 md:col-span-4 space-y-3 group animate-fade-in">
-            <h2 className="text-base font-bold text-foreground">About</h2>
-            <div className="space-y-3 text-[13px] leading-relaxed text-foreground/80 md:text-[14px]">
-              {profile.bio.map((p, i) => (
-                <p key={i}>{p}</p>
-              ))}
-            </div>
-          </div>
+      {/* Mobile Top Bar & Drawer (below lg) */}
+      <MobileNav
+        email={profile.email}
+        onOpenAsk={() => setIsAskOpen(true)}
+        onOpenTyping={() => setIsTypingOpen(true)}
+        onOpenChat={() => setIsChatOpen(true)}
+        onOpenEmail={() => setIsEmailOpen(true)}
+        onOpenGear={() => setIsGearOpen(true)}
+        onOpenCollabs={() => setIsCollabsOpen(true)}
+        onOpenConsulting={() => setIsConsultingOpen(true)}
+        onOpenResources={() => setIsResourcesOpen(true)}
+      />
 
-          {/* Card 2: Right Column Group (Access Card, StellarPH Award Badge, Experience Timeline)
-              This aligns vertically next to About and Tech Stack cards */}
-          <div className="col-span-1 md:col-span-2 md:row-span-3 space-y-2 animate-fade-in">
+      {/* Guided Cursor Tour (Desktop) */}
+      <GuidedCursor
+        onLook={(x, y) => setGuidePos({ x, y })}
+        onReleaseGaze={() => setGuidePos(null)}
+      />
 
-            {/* Access Card Component */}
-            <AccessCard />
+      {/* Main Content Area */}
+      <main id="top" className="relative z-10 lg:pl-56">
+        <div className="mx-auto max-w-2xl px-6">
 
-            {/* Featured Project Card */}
-            <div className="flex justify-center w-full">
-              <Link
-                to="/projects"
-                className="block w-full transition-all duration-200 hover:-translate-y-0.5 hover:opacity-95 cursor-pointer"
-              >
-                <div className="w-full rounded-xl bg-linear-to-r from-accent/10 via-accent/5 to-purple-500/10 border border-accent/25 p-4 text-left">
-                  <span className="text-[9px] font-mono tracking-widest text-accent uppercase font-bold">
-                    FEATURED PROJECT
-                  </span>
-                  <p className="text-xs font-bold text-foreground mt-1.5 leading-snug">
-                    Attendance Management System
-                  </p>
-                  <p className="text-[9.5px] font-mono text-muted mt-0.5">
-                    Flask + PHP + MySQL
-                  </p>
-                  <p className="text-[10.5px] text-muted/95 mt-2 leading-relaxed font-sans">
-                    Full-stack attendance system with authentication, employee tracking, and database integration.
-                  </p>
-                  <div className="mt-3 flex items-center justify-end text-[10px] font-bold text-accent">
-                    <span>View Project</span>
-                    <ChevronRight className="w-3 h-3 ml-0.5" />
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            {/* Experience Card */}
-            <div className="bento-card p-4 space-y-2 group flex-1">
-              <h2 className="text-base font-bold text-foreground">Experience</h2>
-              <div className="relative space-y-4 mt-3">
-                {/* Timeline vertical bar */}
-                <div className="absolute left-1.5 top-1.5 bottom-2 w-px bg-border dark:bg-white/10" />
-
-                {experience.map((item) => (
-                  <div key={item.id} className="relative pl-5 group/role">
-                    {/* Circle timeline dot */}
-                    <div className="absolute left-0 top-1.5 w-3 h-3 rounded-full border-2 border-border bg-background group-hover/role:border-accent group-hover/role:bg-accent transition-colors dark:border-white/10" />
-
-                    <div className="space-y-0.5">
-                      <h3 className="text-xs font-semibold text-foreground group-hover/role:text-accent transition-colors">
-                        {item.role}
-                      </h3>
-                      <div className="flex items-center justify-between text-[10px] text-muted">
-                        <span>{item.company}</span>
-                        <span className="font-mono">{item.year}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          {/* ── Hero Section ── */}
+          <section className="relative pt-20 pb-16 sm:pt-28">
+            <div className="grid gap-9 sm:grid-cols-[18rem_1fr] sm:items-start sm:gap-10">
+              {/* Photo Column with 3D Gaze */}
+              <div className="reveal d1 mx-auto w-full max-w-[18rem] sm:mx-0">
+                <ProfileGaze
+                  avatarSrc={`/${profile.avatar}`}
+                  name={profile.name}
+                  guidePos={guidePos}
+                />
               </div>
-            </div>
-          </div>
 
-          {/* Card 3: Tech Stack (col-span-4) */}
-          <div className="bento-card p-5 col-span-1 md:col-span-4 space-y-3 group animate-fade-in">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-foreground">Tech Stack</h2>
-              <Link
-                className="text-xs text-muted hover:text-accent flex items-center gap-0.5 transition-colors"
-                to="/tech-stack"
-              >
-                <span>View All</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+              {/* Text Column */}
+              <div>
+                <h1 data-guide="name" className="reveal d2 font-pixel text-3xl leading-none sm:text-[2.6rem] text-black dark:text-white">
+                  Jhon Michael
+                </h1>
 
-            <div className="space-y-3 pt-1">
-              {skillCategories.map((cat) => (
-                <div key={cat.name}>
-                  <h3 className="text-xs font-semibold text-foreground/80 mb-1.5">{cat.name}</h3>
-                  <div className="flex flex-wrap gap-1.5">
-                    {cat.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-2 py-0.5 text-[11px] rounded-md bg-foreground/5 dark:bg-white/5 border border-border/40 text-foreground/85 font-medium shadow-sm"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Card 4: Recent Projects (col-span-4) */}
-          <div className="bento-card p-5 col-span-1 md:col-span-4 space-y-3 group animate-fade-in">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-foreground">Recent Projects</h2>
-              <Link
-                className="text-xs text-muted hover:text-accent flex items-center gap-0.5 transition-colors"
-                to="/projects"
-              >
-                <span>View All</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-              {recentProjects.map((project) => (
-                <div
-                  key={project.id}
-                  onClick={() => setSelectedProject(project)}
-                  className="bento-card p-3! space-y-1.5 cursor-pointer hover:border-accent/30 dark:hover:border-accent/30 hover:bg-surface-muted dark:hover:bg-white/5 transition-all duration-300"
-                >
-                  <h3 className="text-xs font-bold text-foreground">{project.name}</h3>
-                  <p className="text-[11px] text-muted line-clamp-2 leading-relaxed">
-                    {project.description}
-                  </p>
-                  <p className="text-[10px] text-accent font-mono font-medium inline-block">
-                    {project.displayUrl}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Card 5: Recent Certifications (col-span-3) */}
-          <div className="bento-card p-5 col-span-1 md:col-span-3 space-y-3 group animate-fade-in">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-foreground">Recent Certifications</h2>
-              <Link
-                className="text-xs text-muted hover:text-accent flex items-center gap-0.5 transition-colors"
-                to="/certifications"
-              >
-                <span>View All</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-
-            <div className="space-y-1.5 pt-1">
-              {certifications.slice(0, 4).map((cert) => (
-                <div
-                  key={cert.id}
-                  onClick={() => setSelectedCert(cert)}
-                  className="p-2.5 rounded-lg bg-foreground/5 dark:bg-white/5 border border-border/40 hover:bg-foreground/10 dark:hover:bg-white/10 transition-colors cursor-pointer text-left"
-                >
-                  <h3 className="text-xs font-bold text-foreground line-clamp-1">{cert.title}</h3>
-                  <p className="text-[10px] text-muted">{cert.issuer}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Card 6: Recommendations (col-span-3) */}
-          <div className="bento-card p-5 col-span-1 md:col-span-3 flex flex-col justify-between group overflow-hidden animate-fade-in">
-            <h2 className="text-base font-bold text-foreground mb-2">Recommendations</h2>
-
-            <div className="flex-1 flex flex-col justify-between min-h-35 pt-1">
-              <AnimatePresence mode="wait">
-                <motion.blockquote
-                  key={currentRecommendation.id}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.35 }}
-                  className="flex-1 flex flex-col justify-between"
-                >
-                  <p className="text-[14px] md:text-[15px] leading-relaxed text-foreground/90 font-sans italic line-clamp-5">
-                    “{currentRecommendation.quote}”
-                  </p>
-
-                  <footer className="mt-3 pt-2.5 border-t border-border/80 dark:border-white/10">
-                    <p className="text-xs font-bold text-foreground">{currentRecommendation.author}</p>
-                    <p className="text-[10px] text-muted truncate">
-                      {currentRecommendation.role} at {currentRecommendation.company}
-                    </p>
-                  </footer>
-                </motion.blockquote>
-              </AnimatePresence>
-
-              {/* Navigation dots */}
-              <div className="flex gap-1.5 mt-3 justify-start">
-                {recommendations.map((rec, i) => (
-                  <button
-                    key={rec.id}
-                    onClick={() => setActiveRec(i)}
-                    className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === activeRec ? 'bg-accent w-3' : 'bg-muted/40 hover:bg-muted/80'
-                      }`}
-                    aria-label={`Jump to recommendation ${i + 1}`}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Card 7: Memberships, Speaking, Socials, & Email (col-span-6) */}
-          <div className="bento-card p-5 col-span-1 md:col-span-6 space-y-4 group animate-fade-in">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-              {/* Speaking Engagements */}
-              <div className="space-y-1.5">
-                <h3 className="text-xs font-bold text-foreground uppercase tracking-wider font-mono">
-                  Open for Opportunities
-                </h3>
-                <p className="text-xs text-muted leading-relaxed">
-                  Available for freelance work, internships, and entry-level software development roles. Open to collaborating on web development projects, system builds, and startup ideas.
+                <p className="reveal d3 mt-6 text-[15px] leading-relaxed text-gray-600 dark:text-gray-400">
+                  I&apos;m a full-stack engineer. I build modern web apps, cloud systems, and these days
+                  I&apos;m focused on robust backend architectures and AI.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => setShowContact(true)}
-                  className="inline-flex items-center gap-1 text-xs text-accent font-semibold hover:underline"
-                >
-                  <span>Send me a message</span>
-                  <ChevronRight className="w-3 h-3" />
-                </button>
-              </div>
 
-              {/* A Member Of */}
-              <div className="space-y-1.5">
-                <h3 className="text-xs font-bold text-foreground uppercase tracking-wider font-mono">
-                  Professional Development
-                </h3>
-                <div className="space-y-1.5">
-                  <a
-                    href="https://www.aap.ph"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-xs font-medium text-foreground/80 hover:text-accent leading-snug truncate"
-                  >
-                    Focused on opportunities in Software Development, Full-Stack Web Development, and IT Support roles. Interested in building real-world systems and scalable web applications.
-                  </a>
-                  <a
-                    href="https://www.psia.org.ph"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block text-xs font-medium text-foreground/80 hover:text-accent leading-snug truncate"
-                  >
-                    Continuously improving skills in web development, full-stack systems, and software engineering through hands-on projects and self-study.
-                  </a>
-                </div>
-              </div>
+                <p className="reveal d4 mt-5 text-[15px] leading-relaxed text-gray-600 dark:text-gray-400">
+                  Right now I&apos;m building practical systems with real-time analytics. I love turning rough ideas
+                  into things people actually use.
+                </p>
 
-              {/* Social Links & Talk CTAs */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-bold text-foreground uppercase tracking-wider font-mono">
-                  Social Links
-                </h3>
-                <div className="flex gap-2">
-                  <a
-                    href="https://www.linkedin.com/in/jm-bautista-842787329/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/80 bg-surface hover:bg-surface-muted text-foreground transition-all duration-200 hover:-translate-y-0.5"
-                    aria-label="LinkedIn"
-                  >
-                    <svg className="w-4 h-4 fill-current text-foreground" viewBox="0 0 24 24">
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-                    </svg>
-                  </a>
+                {/* Social links */}
+                <div data-guide="socials" className="reveal d5 mt-7 flex flex-wrap items-center gap-x-3 gap-y-1.5 font-mono text-[12px] text-gray-500 dark:text-gray-400">
                   <a
                     href="https://github.com/Jm-bautista-dev"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/80 bg-surface hover:bg-surface-muted text-foreground transition-all duration-200 hover:-translate-y-0.5"
-                    aria-label="GitHub"
+                    className="hover:text-black dark:hover:text-white transition-colors"
                   >
-                    <svg className="w-4 h-4 fill-current text-foreground" viewBox="0 0 24 24">
-                      <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
-                    </svg>
+                    github ↗
+                  </a>
+                  <a
+                    href="https://www.linkedin.com/in/jm-bautista-842787329/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-black dark:hover:text-white transition-colors"
+                  >
+                    linkedin ↗
                   </a>
                   <a
                     href="https://www.instagram.com/michel_laurentt/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-9 w-9 items-center justify-center rounded-lg border border-border/80 bg-surface hover:bg-surface-muted text-foreground transition-all duration-200 hover:-translate-y-0.5"
-                    aria-label="Instagram"
+                    className="hover:text-black dark:hover:text-white transition-colors"
                   >
-                    <svg className="w-4 h-4 text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                    </svg>
+                    instagram ↗
                   </a>
+                  <button
+                    type="button"
+                    onClick={() => setIsEmailOpen(true)}
+                    className="hover:text-black dark:hover:text-white cursor-pointer transition-colors"
+                  >
+                    email ↗
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── Affiliations Bar ── */}
+          <section aria-label="Affiliations" className="border-t border-gray-200 dark:border-white/10 py-5">
+            <div className="grid grid-cols-3 divide-x divide-gray-200 dark:divide-white/10">
+              <div className="group flex min-w-0 flex-col items-start gap-1.5 pr-3 sm:flex-row sm:items-center sm:gap-3 sm:pr-5">
+                <span className="flex h-8 shrink-0 items-center text-lg">🛡️</span>
+                <span className="min-w-0 font-mono leading-tight">
+                  <span className="block text-[12px] font-semibold text-black dark:text-white truncate">CCSLYMPICS</span>
+                  <span className="mt-1 block whitespace-nowrap text-[9px] uppercase tracking-wider text-gray-500 sm:text-[10px]">
+                    2nd Place Winner
+                  </span>
+                </span>
+              </div>
+
+              <div className="group flex min-w-0 flex-col items-start gap-1.5 px-3 sm:flex-row sm:items-center sm:gap-3 sm:px-5">
+                <span className="flex h-8 shrink-0 items-center text-lg">🏆</span>
+                <span className="min-w-0 font-mono leading-tight">
+                  <span className="block text-[12px] font-semibold text-black dark:text-white truncate">DICT OpenGov</span>
+                  <span className="mt-1 block whitespace-nowrap text-[9px] uppercase tracking-wider text-gray-500 sm:text-[10px]">
+                    Champion · 2025
+                  </span>
+                </span>
+              </div>
+
+              <div className="group flex min-w-0 flex-col items-start gap-1.5 pl-3 sm:flex-row sm:items-center sm:gap-3 sm:pl-5">
+                <span className="flex h-8 shrink-0 items-center text-lg">🎓</span>
+                <span className="min-w-0 font-mono leading-tight">
+                  <span className="block text-[12px] font-semibold text-black dark:text-white truncate">Laguna Univ</span>
+                  <span className="mt-1 block whitespace-nowrap text-[9px] uppercase tracking-wider text-gray-500 sm:text-[10px]">
+                    BS IT Analytics
+                  </span>
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* ── Stats ── */}
+          <section data-guide="stats" className="grid grid-cols-3 divide-x divide-gray-200 dark:divide-white/10 border-t border-gray-200 dark:border-white/10">
+            <div className="py-6 pr-3 sm:pr-5">
+              <button
+                type="button"
+                onClick={() => setIsCommunityOpen(true)}
+                className="group block text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  <span className="font-pixel text-lg leading-none text-black dark:text-white">5+</span>
+                  <svg className="h-3 w-3 -translate-y-1 text-gray-300 transition-all group-hover:-translate-y-1.5 group-hover:translate-x-0.5 group-hover:text-black dark:group-hover:text-white" viewBox="0 0 16 16" fill="none">
+                    <path d="M5 11L11 5M11 5H6M11 5V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="mt-2 font-mono text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+                  projects built
+                </div>
+              </button>
+            </div>
+
+            <div className="py-6 px-3 sm:px-5">
+              <a href="#projects" className="group block">
+                <div className="flex items-center gap-1">
+                  <span className="font-pixel text-lg leading-none text-black dark:text-white">4+ yrs</span>
+                  <svg className="h-3 w-3 -translate-y-1 text-gray-300 transition-all group-hover:-translate-y-1.5 group-hover:translate-x-0.5 group-hover:text-black dark:group-hover:text-white" viewBox="0 0 16 16" fill="none">
+                    <path d="M5 11L11 5M11 5H6M11 5V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="mt-2 font-mono text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+                  shipping code
+                </div>
+              </a>
+            </div>
+
+            <div className="py-6 pl-3 sm:pl-5">
+              <button
+                type="button"
+                onClick={() => setIsHackathonsOpen(true)}
+                className="group block text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-1">
+                  <span className="font-pixel text-lg leading-none text-black dark:text-white">
+                    2<span className="text-gray-300 dark:text-gray-600">x</span>
+                  </span>
+                  <svg className="h-3 w-3 -translate-y-1 text-gray-300 transition-all group-hover:-translate-y-1.5 group-hover:translate-x-0.5 group-hover:text-black dark:group-hover:text-white" viewBox="0 0 16 16" fill="none">
+                    <path d="M5 11L11 5M11 5H6M11 5V10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
+                <div className="mt-2 font-mono text-[11px] uppercase tracking-wider text-gray-500 dark:text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors">
+                  hackathons &amp; awards
+                </div>
+              </button>
+            </div>
+          </section>
+
+          {/* Halftone divider */}
+          <div aria-hidden="true" className="halftone halftone-wide mask-fade-x my-2 h-6 w-full opacity-[0.18]" />
+
+          {/* ── 01 — Blog ── */}
+          <section id="blog" className="relative py-14">
+            <div aria-hidden="true" className="halftone mask-circle pointer-events-none absolute -left-10 bottom-6 h-32 w-32 opacity-20" />
+
+            <div className="mb-8 flex items-baseline justify-between">
+              <h2 className="font-pixel text-sm text-gray-400">01 — blog</h2>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">
+                all posts →
+              </span>
+            </div>
+
+            <div className="divide-y divide-gray-200 border-y border-gray-200 dark:divide-white/10 dark:border-white/10">
+              {blogPosts.map((post) => (
+                <div
+                  key={post.id}
+                  className="group flex items-baseline justify-between gap-6 py-5 hover:bg-gray-50/80 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                  onClick={() => {
+                    soundManager.play('click')
+                    setIsAskOpen(true)
+                  }}
+                >
+                  <div className="min-w-0">
+                    <h3 className="truncate text-[15px] font-medium text-black group-hover:text-gray-500 dark:text-white dark:group-hover:text-gray-300">
+                      {post.title}
+                    </h3>
+                    <p className="mt-1 truncate text-sm text-gray-500 dark:text-gray-400">
+                      {post.summary}
+                    </p>
+                  </div>
+                  <time className="shrink-0 font-mono text-[12px] text-gray-400">
+                    {post.date}
+                  </time>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ── 02 — Projects (Spotlight Card Deck) ── */}
+          <section id="projects" className="py-14">
+            <div className="mb-8 flex items-baseline justify-between">
+              <h2 className="font-pixel text-sm text-gray-400">02 — projects</h2>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">
+                featured deck →
+              </span>
+            </div>
+
+            <ProjectDeck />
+          </section>
+
+          {/* ── 03 — Experience ── */}
+          <section id="experience" className="py-14">
+            <div className="mb-6 flex items-baseline justify-between">
+              <h2 className="font-pixel text-sm text-gray-400">03 — experience</h2>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">
+                full history →
+              </span>
+            </div>
+
+            <div className="divide-y divide-gray-200 border-y border-gray-200 dark:divide-white/10 dark:border-white/10">
+              {experience.map((exp) => (
+                <div
+                  key={exp.id}
+                  className="group grid grid-cols-12 items-baseline gap-3 py-2.5 hover:bg-gray-50/80 dark:hover:bg-white/5 transition-colors"
+                >
+                  <div className="col-span-3 sm:col-span-2 font-mono text-[11px] text-gray-400">
+                    {exp.year}
+                  </div>
+                  <div className="col-span-9 sm:col-span-6 text-[14px] font-medium text-black dark:text-white leading-snug">
+                    {exp.role}
+                  </div>
+                  <div className="col-span-12 sm:col-span-4 text-[13px] text-gray-500 dark:text-gray-400 sm:text-right">
+                    {exp.company}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Stack Tags */}
+            <div className="mt-7">
+              <div className="mb-4 flex items-baseline justify-between">
+                <h3 className="font-mono text-[11px] uppercase tracking-wider text-gray-400">Stack</h3>
+                <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">
+                  core tools
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {stackSkills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-md border border-gray-200 bg-white px-2.5 py-1 font-mono text-[12px] text-gray-600 dark:border-white/10 dark:bg-white/5 dark:text-gray-300"
+                  >
+                    {skill}
+                  </span>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setIsAskOpen(true)}
+                  className="rounded-md border border-dashed border-gray-300 px-2.5 py-1 font-mono text-[12px] text-gray-500 hover:border-gray-500 hover:text-black dark:border-white/20 dark:hover:border-white dark:hover:text-white cursor-pointer"
+                >
+                  + more
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* ── 04 — Certifications ── */}
+          <section id="certifications" className="py-14">
+            <div className="mb-8 flex items-baseline justify-between">
+              <h2 className="font-pixel text-sm text-gray-400">04 — certifications</h2>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">
+                all certifications →
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {certifications.slice(0, 3).map((cert) => (
+                <div
+                  key={cert.id}
+                  onClick={() => {
+                    soundManager.play('pop')
+                    setSelectedCert(cert)
+                  }}
+                  className="group relative flex flex-col items-center rounded-xl bg-linear-to-b from-gray-50 to-white px-4 py-5 text-center shadow-[0_8px_22px_-14px_rgba(10,10,10,0.25)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-20px_rgba(10,10,10,0.4)] dark:from-[#151518] dark:to-[#0c0c0f] dark:shadow-none cursor-pointer border border-gray-200 dark:border-white/10"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-1.25 rounded-lg border border-gray-200/70 dark:border-white/5"
+                  />
+                  <div className="relative flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white text-lg dark:border-white/10 dark:bg-white/5">
+                    📜
+                  </div>
+                  <h3 className="relative mt-3 text-[13px] font-semibold leading-snug text-black dark:text-white line-clamp-2">
+                    {cert.title}
+                  </h3>
+                  <p className="relative mt-1 font-mono text-[9.5px] uppercase tracking-wider text-gray-400">
+                    {cert.issuer}
+                  </p>
+                  <div className="relative mt-3 flex items-center gap-1.5 text-gray-300 group-hover:text-black dark:group-hover:text-white transition-colors">
+                    <svg viewBox="0 0 13 22" fill="currentColor" aria-hidden="true" className="h-3.5 w-auto shrink-0">
+                      <path d="M0 -4C2.1 -2.6 2.1 2.6 0 4C-2.1 2.6 -2.1 -2.6 0 -4Z" transform="translate(8 5) rotate(46)" />
+                      <path d="M0 -4.3C2.3 -2.8 2.3 2.8 0 4.3C-2.3 2.8 -2.3 -2.8 0 -4.3Z" transform="translate(4.6 11) rotate(14)" />
+                      <path d="M0 -4C2.1 -2.6 2.1 2.6 0 4C-2.1 2.6 -2.1 -2.6 0 -4Z" transform="translate(8 17) rotate(-30)" />
+                    </svg>
+                    <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-gray-400 group-hover:text-black dark:group-hover:text-white">
+                      Verify
+                    </span>
+                    <span className="inline-flex -scale-x-100">
+                      <svg viewBox="0 0 13 22" fill="currentColor" aria-hidden="true" className="h-3.5 w-auto shrink-0">
+                        <path d="M0 -4C2.1 -2.6 2.1 2.6 0 4C-2.1 2.6 -2.1 -2.6 0 -4Z" transform="translate(8 5) rotate(46)" />
+                        <path d="M0 -4.3C2.3 -2.8 2.3 2.8 0 4.3C-2.3 2.8 -2.3 -2.8 0 -4.3Z" transform="translate(4.6 11) rotate(14)" />
+                        <path d="M0 -4C2.1 -2.6 2.1 2.6 0 4C-2.1 2.6 -2.1 -2.6 0 -4Z" transform="translate(8 17) rotate(-30)" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ── 05 — Recommendations ── */}
+          <section id="recommendations" className="py-14">
+            <div className="mb-8 flex items-baseline justify-between">
+              <h2 className="font-pixel text-sm text-gray-400">05 — recommendations</h2>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">
+                all feedback →
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {recommendations.map((rec) => (
+                <div
+                  key={rec.id}
+                  className="group flex flex-col rounded-xl bg-linear-to-b from-gray-50 to-white p-5 shadow-[0_8px_22px_-16px_rgba(10,10,10,0.2)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_36px_-20px_rgba(10,10,10,0.35)] dark:from-[#151518] dark:to-[#0c0c0f] dark:shadow-none border border-gray-200 dark:border-white/10"
+                >
+                  <svg className="h-5 w-5 text-gray-300 dark:text-gray-600" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 7H6a3 3 0 00-3 3v1a3 3 0 003 3h1v1a2 2 0 01-2 2H4v2h1a4 4 0 004-4V7zm11 0h-3a3 3 0 00-3 3v1a3 3 0 003 3h1v1a2 2 0 01-2 2h-1v2h1a4 4 0 004-4V7z" />
+                  </svg>
+                  <p className="rec-quote mt-2 text-[13.5px] leading-relaxed text-gray-700 dark:text-gray-300 italic">
+                    &ldquo;{rec.quote}&rdquo;
+                  </p>
+                  <div className="mt-4 flex items-center gap-2.5 border-t border-gray-100 dark:border-white/10 pt-3">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 font-mono text-[10px] font-medium text-gray-600 dark:bg-white/10 dark:text-gray-300">
+                      {rec.author.split(' ').map((n) => n[0]).join('')}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="truncate text-[12px] font-semibold text-black dark:text-white">
+                        {rec.author}
+                      </div>
+                      <div className="truncate font-mono text-[9px] uppercase tracking-wider text-gray-400">
+                        {rec.role} · {rec.company}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* ── 06 — Affiliations ── */}
+          <section id="affiliations" className="py-14">
+            <div className="mb-7 flex items-baseline justify-between">
+              <h2 className="font-pixel text-sm text-gray-400">06 — affiliations</h2>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-gray-500">
+                networks →
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+              <div className="group inline-flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-lg dark:border-white/10 dark:bg-white/5">
+                  🎓
+                </div>
+                <div>
+                  <div className="text-[13px] font-medium leading-snug text-black dark:text-white">Laguna University</div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-gray-400">Student &amp; Developer</div>
                 </div>
               </div>
 
+              <div className="group inline-flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-lg dark:border-white/10 dark:bg-white/5">
+                  🏆
+                </div>
+                <div>
+                  <div className="text-[13px] font-medium leading-snug text-black dark:text-white">DICT OpenGov</div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-gray-400">Hackathon Champion</div>
+                </div>
+              </div>
+
+              <div className="group inline-flex items-center gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[18px] leading-none dark:border-white/10 dark:bg-white/5">
+                  🇵🇭
+                </div>
+                <div>
+                  <div className="text-[13px] font-medium leading-snug text-black dark:text-white">AppBuildersPH</div>
+                  <div className="font-mono text-[10px] uppercase tracking-wider text-gray-400">Active Builder</div>
+                </div>
+              </div>
             </div>
-          </div>
+          </section>
 
-          {/* Card 8: Gallery (col-span-6) */}
-          <div className="bento-card p-5 col-span-1 md:col-span-6 space-y-3 group animate-fade-in">
-            <h2 className="text-base font-bold text-foreground">Gallery</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
-
-              {/* Four stylish placeholder image cards for Gallery (easy to replace) */}
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
-                <Compass className="w-5 h-5 text-muted opacity-40" />
-                <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Workspace</span>
-              </div>
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
-                <Briefcase className="w-5 h-5 text-muted opacity-40" />
-                <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Conferences</span>
-              </div>
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-muted opacity-40" />
-                <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Hackathon</span>
-              </div>
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
-                <Mail className="w-5 h-5 text-muted opacity-40" />
-                <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Community</span>
-              </div>
-
+          {/* ── 07 — GitHub Heatmap (Halftone Contribution Graph) ── */}
+          <section id="github" className="py-14">
+            <div className="mb-6 flex items-baseline justify-between">
+              <h2 className="font-pixel text-sm text-gray-400">07 — github</h2>
+              <a
+                href="https://github.com/Jm-bautista-dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[11px] uppercase tracking-wider text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+              >
+                @Jm-bautista-dev ↗
+              </a>
             </div>
-          </div>
 
-        </section>
+            <a
+              href="https://github.com/Jm-bautista-dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block"
+            >
+              <svg viewBox="0 0 689 91" className="h-auto w-full text-black dark:text-white" preserveAspectRatio="xMidYMid meet" aria-label="GitHub contribution graph">
+                {Array.from({ length: 53 }).map((_, col) => {
+                  const cx = 6.5 + col * 13
+                  return Array.from({ length: 7 }).map((_, row) => {
+                    const cy = 6.5 + row * 13
+                    // Generate subtle variations matching the halftone commit graph
+                    const seed = (col * 7 + row * 13) % 29
+                    const isActive = seed > 14
+                    const isSuper = seed > 24
+                    const r = isSuper ? 3.8 : isActive ? 2.5 : 1.1
+                    const opacity = isActive ? 0.9 : 0.12
+                    return (
+                      <circle
+                        key={`${col}-${row}`}
+                        cx={cx}
+                        cy={cy}
+                        r={r}
+                        fill="currentColor"
+                        opacity={opacity}
+                      />
+                    )
+                  })
+                })}
+              </svg>
+            </a>
 
-        {/* Footer */}
-        <footer className="mt-8 mb-4 text-center text-[11px] text-muted tracking-tight">
-          <p>© {new Date().getFullYear()} © 2026 JM Bautista. All rights reserved.</p>
-        </footer>
-      </PageShell>
+            <p className="mt-4 font-mono text-[11px] uppercase tracking-wider text-gray-400">
+              2,689 contributions in the last year
+            </p>
+          </section>
 
-      {/* Project details overlay modal popup */}
-      <ProjectModal
-        project={selectedProject}
-        onClose={() => setSelectedProject(null)}
+          {/* Bottom Halftone Fade */}
+          <div aria-hidden="true" className="halftone halftone-wide mask-fade-x mb-16 mt-2 h-10 w-full opacity-[0.15]" />
+
+        </div>
+      </main>
+
+      {/* Modals & Overlays */}
+      <EmailModal
+        isOpen={isEmailOpen}
+        onClose={() => setIsEmailOpen(false)}
+        email={profile.email}
       />
 
-      {/* Certification details overlay modal popup */}
+      <CommunityModal
+        isOpen={isCommunityOpen}
+        onClose={() => setIsCommunityOpen(false)}
+      />
+
+      <HackathonsModal
+        isOpen={isHackathonsOpen}
+        onClose={() => setIsHackathonsOpen(false)}
+      />
+
+      <AskOverlay
+        isOpen={isAskOpen}
+        onClose={() => setIsAskOpen(false)}
+      />
+
+      <TypingTestOverlay
+        isOpen={isTypingOpen}
+        onClose={() => setIsTypingOpen(false)}
+      />
+
+      <CommunityChatOverlay
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+      />
+
+      <GearModal
+        isOpen={isGearOpen}
+        onClose={() => setIsGearOpen(false)}
+      />
+
+      <CollabsModal
+        isOpen={isCollabsOpen}
+        onClose={() => setIsCollabsOpen(false)}
+        onOpenEmail={() => setIsEmailOpen(true)}
+      />
+
+      <ConsultingModal
+        isOpen={isConsultingOpen}
+        onClose={() => setIsConsultingOpen(false)}
+        onOpenEmail={() => setIsEmailOpen(true)}
+      />
+
+      <ResourcesModal
+        isOpen={isResourcesOpen}
+        onClose={() => setIsResourcesOpen(false)}
+      />
+
       <CertificationModal
         certification={selectedCert}
         onClose={() => setSelectedCert(null)}
       />
-
-      {/* EmailJS contact form modal */}
-      <ContactModal
-        isOpen={showContact}
-        onClose={() => setShowContact(false)}
-        recipientEmail={profile.email}
-      />
-    </motion.div>
+    </div>
   )
 }
