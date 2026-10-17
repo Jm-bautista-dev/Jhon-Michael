@@ -277,7 +277,7 @@ export function Sidebar({
           <img
             className="presence-avatar"
             alt=""
-            src="https://api.dicebear.com/9.x/notionists/svg?seed=Maria&radius=50&backgroundColor=f1f1f1"
+            src="https://api.dicebear.com/9.x/notionists/svg?seed=Visitor&radius=50&backgroundColor=f1f1f1"
           />
         </span>
         <p className="mt-1 font-mono text-[10.5px] text-gray-400">

@@ -16,8 +16,21 @@ interface CommunityChatOverlayProps {
   onClose: () => void
 }
 
-const DUMMY_IDS = new Set(['1', '2', '3'])
-const DUMMY_NAMES = new Set(['Bryl Lim', 'Alex D.', 'Maria Santos'])
+function isDummyMessage(m: ChatMessage): boolean {
+  if (!m) return true
+  const n = (m.name || '').trim().toLowerCase()
+  const msg = (m.message || '').trim().toLowerCase()
+  if (['1', '2', '3'].includes(String(m.id))) return true
+  if (n.includes('bryl') || n.includes('alex') || n.includes('maria')) return true
+  if (
+    msg.includes('welcome to the site') ||
+    msg.includes('maki desu pos looks super clean') ||
+    msg.includes('ccslympics win')
+  ) {
+    return true
+  }
+  return false
+}
 
 export function CommunityChatOverlay({ isOpen, onClose }: CommunityChatOverlayProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
@@ -25,12 +38,8 @@ export function CommunityChatOverlay({ isOpen, onClose }: CommunityChatOverlayPr
       const saved = localStorage.getItem('portfolio_chat_messages')
       if (saved) {
         const parsed: ChatMessage[] = JSON.parse(saved)
-        const actual = parsed.filter(
-          (m) => !DUMMY_IDS.has(m.id) && !DUMMY_NAMES.has(m.name)
-        )
-        if (actual.length !== parsed.length) {
-          localStorage.setItem('portfolio_chat_messages', JSON.stringify(actual))
-        }
+        const actual = parsed.filter((m) => !isDummyMessage(m))
+        localStorage.setItem('portfolio_chat_messages', JSON.stringify(actual))
         return actual
       }
       return []
@@ -64,6 +73,7 @@ export function CommunityChatOverlay({ isOpen, onClose }: CommunityChatOverlayPr
     const timer = setTimeout(() => inputRef.current?.focus(), 80)
     return () => clearTimeout(timer)
   }, [])
+
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -146,18 +156,22 @@ export function CommunityChatOverlay({ isOpen, onClose }: CommunityChatOverlayPr
 
         {/* Message list */}
         <div className="flex-1 space-y-4 overflow-y-auto py-4 pr-1">
-          {messages.length === 0 ? (
-            <div className="flex h-36 flex-col items-center justify-center text-center text-gray-400">
-              <svg className="mb-2 h-6 w-6 opacity-40" viewBox="0 0 24 24" fill="none">
-                <path d="M4 5.5h16v10H10l-4.5 4v-4H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-                <circle cx="9" cy="10.5" r=".9" fill="currentColor" />
-                <circle cx="12" cy="10.5" r=".9" fill="currentColor" />
-                <circle cx="15" cy="10.5" r=".9" fill="currentColor" />
-              </svg>
-              <p className="font-mono text-xs">no messages yet — say hi 👋</p>
-            </div>
-          ) : (
-            messages.map((m) => (
+          {(() => {
+            const actualMessages = messages.filter((m) => !isDummyMessage(m))
+            if (actualMessages.length === 0) {
+              return (
+                <div className="flex h-36 flex-col items-center justify-center text-center text-gray-400">
+                  <svg className="mb-2 h-6 w-6 opacity-40" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 5.5h16v10H10l-4.5 4v-4H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                    <circle cx="9" cy="10.5" r=".9" fill="currentColor" />
+                    <circle cx="12" cy="10.5" r=".9" fill="currentColor" />
+                    <circle cx="15" cy="10.5" r=".9" fill="currentColor" />
+                  </svg>
+                  <p className="font-mono text-xs">no messages yet — say hi 👋</p>
+                </div>
+              )
+            }
+            return actualMessages.map((m) => (
               <div key={m.id} className="flex items-start gap-3">
                 <img
                   src={`https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(m.avatarSeed)}&radius=50&backgroundColor=f1f1f1`}
@@ -176,7 +190,7 @@ export function CommunityChatOverlay({ isOpen, onClose }: CommunityChatOverlayPr
                 </div>
               </div>
             ))
-          )}
+          })()}
           <div ref={messagesEndRef} />
         </div>
 

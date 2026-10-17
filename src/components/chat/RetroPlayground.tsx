@@ -27,11 +27,8 @@ export function RetroPlayground({ playerName }: RetroPlaygroundProps) {
       color: '#000000',
     }
 
-    // NPCs
-    const npcs = [
-      { x: 7 * TILE, y: 2 * TILE, name: 'Bryl', emoji: '🧑‍💻' },
-      { x: 12 * TILE, y: 3 * TILE, name: 'Maria', emoji: '👩‍💻' },
-    ]
+    // NPCs (empty - real visitors only)
+    const npcs: { x: number; y: number; name: string; emoji: string }[] = []
 
     // Furniture (desks)
     const desks = [
