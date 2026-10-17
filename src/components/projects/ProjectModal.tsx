@@ -57,7 +57,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
       {project && (
         <motion.div
           key={project.id}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6"
+          className="fixed inset-0 z-100 flex items-center justify-center p-3 sm:p-4 md:p-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="project-modal-title"

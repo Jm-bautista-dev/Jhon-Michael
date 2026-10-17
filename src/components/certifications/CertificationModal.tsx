@@ -63,7 +63,7 @@ export function CertificationModal({ certification, onClose }: CertificationModa
       {certification && (
         <motion.div
           key={certification.id}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6"
+          className="fixed inset-0 z-100 flex items-center justify-center p-3 sm:p-4 md:p-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="cert-modal-title"
@@ -132,7 +132,7 @@ export function CertificationModal({ certification, onClose }: CertificationModa
                 variants={panelVariants}
                 initial="hidden"
                 animate="visible"
-                className="order-1 flex w-full shrink-0 flex-col gap-5 overflow-y-auto border-b border-border/80 p-4 sm:p-6 lg:order-none lg:w-[300px] lg:max-h-full lg:border-b-0 lg:border-r xl:w-[340px]"
+                className="order-1 flex w-full shrink-0 flex-col gap-5 overflow-y-auto border-b border-border/80 p-4 sm:p-6 lg:order-0 lg:w-75 lg:max-h-full lg:border-b-0 lg:border-r xl:w-85"
               >
                 <div className="space-y-5">
                   <div className="rounded-xl border border-border bg-accent-soft/50 p-4">
@@ -204,9 +204,9 @@ export function CertificationModal({ certification, onClose }: CertificationModa
                 variants={panelVariants}
                 initial="hidden"
                 animate="visible"
-                className="order-2 min-h-0 flex-1 overflow-auto p-4 sm:p-6 lg:order-none"
+                className="order-2 min-h-0 flex-1 overflow-auto p-4 sm:p-6 lg:order-0"
               >
-                <CertificatePreview certification={certification} />
+                <CertificatePreview key={certification.id} certification={certification} />
               </motion.div>
             </div>
           </motion.div>

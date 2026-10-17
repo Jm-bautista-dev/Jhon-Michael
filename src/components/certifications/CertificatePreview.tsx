@@ -19,15 +19,20 @@ export function CertificatePreview({ certification }: CertificatePreviewProps) {
 
   const [loaded, setLoaded] = useState(false)
   const [zoomIndex, setZoomIndex] = useState(0)
+  const [prevSrc, setPrevSrc] = useState(previewSrc)
   const scale = ZOOM_LEVELS[zoomIndex]
 
-  useEffect(() => {
+  if (prevSrc !== previewSrc) {
+    setPrevSrc(previewSrc)
     setLoaded(false)
     setZoomIndex(0)
+  }
+
+  useEffect(() => {
     if (!isPdf) return
     const timer = setTimeout(() => setLoaded(true), 600)
     return () => clearTimeout(timer)
-  }, [certification.id, previewSrc, isPdf])
+  }, [previewSrc, isPdf])
 
   const zoomIn = useCallback(() => {
     setZoomIndex((i) => Math.min(i + 1, ZOOM_LEVELS.length - 1))
@@ -38,7 +43,7 @@ export function CertificatePreview({ certification }: CertificatePreviewProps) {
   }, [])
 
   return (
-    <div className="relative flex h-full min-h-[320px] flex-col md:min-h-[480px]">
+    <div className="relative flex h-full min-h-80 flex-col md:min-h-120">
       <div className="absolute right-3 top-3 z-10 flex gap-1">
         <button
           type="button"

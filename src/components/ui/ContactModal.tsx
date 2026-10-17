@@ -95,7 +95,7 @@ export function ContactModal({ isOpen, onClose, recipientEmail }: ContactModalPr
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={handleClose}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
+          className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
         >
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.96 }}

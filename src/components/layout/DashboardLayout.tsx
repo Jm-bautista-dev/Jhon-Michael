@@ -79,7 +79,7 @@ export function DashboardLayout() {
                 to="/projects"
                 className="block w-full transition-all duration-200 hover:-translate-y-0.5 hover:opacity-95 cursor-pointer"
               >
-                <div className="w-full rounded-xl bg-gradient-to-r from-accent/10 via-accent/5 to-purple-500/10 border border-accent/25 p-4 text-left">
+                <div className="w-full rounded-xl bg-linear-to-r from-accent/10 via-accent/5 to-purple-500/10 border border-accent/25 p-4 text-left">
                   <span className="text-[9px] font-mono tracking-widest text-accent uppercase font-bold">
                     FEATURED PROJECT
                   </span>
@@ -177,7 +177,7 @@ export function DashboardLayout() {
                 <div
                   key={project.id}
                   onClick={() => setSelectedProject(project)}
-                  className="bento-card !p-3 space-y-1.5 cursor-pointer hover:border-accent/30 dark:hover:border-accent/30 hover:bg-surface-muted dark:hover:bg-white/5 transition-all duration-300"
+                  className="bento-card p-3! space-y-1.5 cursor-pointer hover:border-accent/30 dark:hover:border-accent/30 hover:bg-surface-muted dark:hover:bg-white/5 transition-all duration-300"
                 >
                   <h3 className="text-xs font-bold text-foreground">{project.name}</h3>
                   <p className="text-[11px] text-muted line-clamp-2 leading-relaxed">
@@ -222,7 +222,7 @@ export function DashboardLayout() {
           <div className="bento-card p-5 col-span-1 md:col-span-3 flex flex-col justify-between group overflow-hidden animate-fade-in">
             <h2 className="text-base font-bold text-foreground mb-2">Recommendations</h2>
 
-            <div className="flex-1 flex flex-col justify-between min-h-[140px] pt-1">
+            <div className="flex-1 flex flex-col justify-between min-h-35 pt-1">
               <AnimatePresence mode="wait">
                 <motion.blockquote
                   key={currentRecommendation.id}
@@ -360,19 +360,19 @@ export function DashboardLayout() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
 
               {/* Four stylish placeholder image cards for Gallery (easy to replace) */}
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/[0.03] dark:bg-white/5 flex items-center justify-center">
+              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
                 <Compass className="w-5 h-5 text-muted opacity-40" />
                 <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Workspace</span>
               </div>
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/[0.03] dark:bg-white/5 flex items-center justify-center">
+              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
                 <Briefcase className="w-5 h-5 text-muted opacity-40" />
                 <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Conferences</span>
               </div>
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/[0.03] dark:bg-white/5 flex items-center justify-center">
+              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
                 <Trophy className="w-5 h-5 text-muted opacity-40" />
                 <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Hackathon</span>
               </div>
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/[0.03] dark:bg-white/5 flex items-center justify-center">
+              <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-foreground/3 dark:bg-white/5 flex items-center justify-center">
                 <Mail className="w-5 h-5 text-muted opacity-40" />
                 <span className="absolute bottom-1.5 left-2 text-[9px] font-mono text-muted uppercase">Community</span>
               </div>

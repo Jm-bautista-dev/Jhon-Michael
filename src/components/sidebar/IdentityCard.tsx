@@ -22,7 +22,7 @@ export function IdentityCard({ profile }: IdentityCardProps) {
       animate="visible"
       variants={sidebarFloat}
       whileHover={{ y: -2 }}
-      className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-black via-[#111111] to-[#0a0a0a] p-5 text-white shadow-xl dark:shadow-none"
+      className="relative overflow-hidden rounded-2xl border border-white/10 bg-linear-to-br from-black via-[#111111] to-[#0a0a0a] p-5 text-white shadow-xl dark:shadow-none"
     >
       <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-accent/20 blur-3xl" />
 

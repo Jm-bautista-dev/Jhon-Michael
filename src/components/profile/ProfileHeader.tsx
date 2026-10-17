@@ -38,7 +38,7 @@ export function ProfileHeader({ profile, onContactClick }: ProfileHeaderProps) {
               <svg
                 viewBox="0 0 22 22"
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 flex-shrink-0"
+                className="h-5 w-5 shrink-0"
                 aria-label="Verified user"
               >
                 <path

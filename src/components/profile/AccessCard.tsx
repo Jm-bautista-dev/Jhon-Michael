@@ -37,7 +37,7 @@ export function AccessCard() {
         onMouseMove={handleMouseMove}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={handleMouseLeave}
-        className="card-hover-shimmer-parent relative w-full max-w-[260px] overflow-hidden rounded-[12px] shadow-[0_4px_20px_rgba(0,0,0,0.15)] cursor-pointer"
+        className="card-hover-shimmer-parent relative w-full max-w-65 overflow-hidden rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.15)] cursor-pointer"
         style={{
           transform: `perspective(800px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) ${isHovered ? 'translateY(-2px)' : ''
             }`,
@@ -50,7 +50,7 @@ export function AccessCard() {
       >
         {/* Background gradient */}
         <div
-          className="absolute inset-0 rounded-[12px]"
+          className="absolute inset-0 rounded-xl"
           style={{
             background:
               'linear-gradient(203.33deg, rgb(17, 17, 17) 1.16%, rgb(40, 40, 40) 14.27%, rgb(80, 80, 80) 34.09%, rgb(55, 55, 55) 53.64%, rgb(30, 30, 30) 80.17%, rgb(10, 10, 10) 100%)',
@@ -58,12 +58,12 @@ export function AccessCard() {
         />
 
         {/* Borders and Shimmers */}
-        <div className="card-border-shimmer absolute inset-0 rounded-[12px]" />
-        <div className="card-hover-shimmer pointer-events-none absolute inset-0 rounded-[12px]" />
-        <div className="pointer-events-none absolute inset-0 z-20 rounded-[12px] border border-white/10" />
+        <div className="card-border-shimmer absolute inset-0 rounded-xl" />
+        <div className="card-hover-shimmer pointer-events-none absolute inset-0 rounded-xl" />
+        <div className="pointer-events-none absolute inset-0 z-20 rounded-xl border border-white/10" />
 
         {/* Content Card Body */}
-        <div className="absolute left-[20px] top-[25px] right-[20px] z-10 flex flex-col text-left select-none">
+        <div className="absolute left-5 top-6.25 right-5 z-10 flex flex-col text-left select-none">
           {/* Terminal Icon (Pure SVG fallback for portability) */}
           <svg
             className="w-8 h-8 text-white opacity-95 mb-2.5"
@@ -81,11 +81,11 @@ export function AccessCard() {
           <p className="text-[14px] font-bold tracking-tight text-white uppercase font-mono">
             DEV PROFILE
           </p>
-          <p className="mt-[1px] text-[9px] font-mono font-medium uppercase tracking-[0.08em] text-accent">
+          <p className="mt-px text-[9px] font-mono font-medium uppercase tracking-[0.08em] text-accent">
             Aspiring Full-Stack
           </p>
 
-          <div className="mt-[20px] space-y-2">
+          <div className="mt-5 space-y-2">
             <div>
               <p className="text-[7.5px] font-mono uppercase tracking-[0.08em] text-white/40">Role</p>
               <p className="text-[10px] font-sans font-semibold text-white">Full Stack Developer</p>
@@ -106,12 +106,12 @@ export function AccessCard() {
         </div>
 
         {/* Developer Footer */}
-        <p className="absolute bottom-[20px] left-[20px] right-[60px] z-10 text-[8.5px] font-mono font-medium uppercase tracking-[0.08em] text-emerald-400 select-none">
+        <p className="absolute bottom-5 left-5 right-15 z-10 text-[8.5px] font-mono font-medium uppercase tracking-[0.08em] text-emerald-400 select-none">
           Active: Open for Roles
         </p>
 
         {/* QR Code Icon (Pure SVG fallback) */}
-        <div className="absolute bottom-[20px] right-[20px] z-10 opacity-40">
+        <div className="absolute bottom-5 right-5 z-10 opacity-40">
           <svg
             className="w-11 h-11 text-white"
             viewBox="0 0 24 24"

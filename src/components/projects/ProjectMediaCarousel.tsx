@@ -66,7 +66,7 @@ export function ProjectMediaCarousel({ images, alt, autoPlay = false }: ProjectM
 
   return (
     <>
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-card-dark sm:aspect-[16/9]">
+      <div className="relative aspect-16/10 w-full overflow-hidden bg-card-dark sm:aspect-video">
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
@@ -88,7 +88,7 @@ export function ProjectMediaCarousel({ images, alt, autoPlay = false }: ProjectM
           <div className="absolute inset-0 animate-pulse bg-card-dark-muted" aria-hidden />
         )}
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-black/10" />
 
         {images.length > 1 && (
           <>
@@ -136,7 +136,7 @@ export function ProjectMediaCarousel({ images, alt, autoPlay = false }: ProjectM
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               onClick={() => setIsFullscreen(false)}
-              className="fixed inset-0 z-[150] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md cursor-zoom-out"
+              className="fixed inset-0 z-150 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md cursor-zoom-out"
             >
               {/* Close Button */}
               <button

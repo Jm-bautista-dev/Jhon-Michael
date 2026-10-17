@@ -17,7 +17,7 @@ const links = [
 export function CTACard({ profile }: CTACardProps) {
   return (
     <motion.div custom={4} initial="hidden" animate="visible" variants={sidebarFloat}>
-      <div className="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-accent-soft to-surface p-5 shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-border bg-linear-to-br from-accent-soft to-surface p-5 shadow-sm">
         <p className="mb-1 text-sm font-semibold text-foreground">Let&apos;s work together</p>
         <p className="mb-4 text-xs text-muted">
           Available for full-time roles, contract sprints, and technical advisory.

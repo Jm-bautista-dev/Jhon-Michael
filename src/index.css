@@ -127,7 +127,7 @@
 }
 
 .dark .bento-card {
-  @apply border-white/[0.08] bg-[#141414] hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)];
+  @apply border-white/8 bg-[#141414] hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)];
 }
 
 /* 3D Tilt Hover Shimmer Effect for Access Card */
