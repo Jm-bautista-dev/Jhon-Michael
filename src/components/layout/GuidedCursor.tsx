@@ -236,7 +236,7 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
 
           {/* Name Tag & Properly-Proportioned Speech Bubble */}
           <div
-            className={`absolute left-0 top-0 w-max min-w-[180px] max-w-[280px] flex flex-col items-start px-3.5 py-2.5 bg-black text-white dark:bg-white dark:text-black shadow-[0_12px_28px_-10px_rgba(0,0,0,0.45)] transition-all duration-300 ${
+            className={`absolute left-0 top-0 w-max min-w-45 max-w-70 flex flex-col items-start px-3.5 py-2.5 bg-black text-white dark:bg-white dark:text-black shadow-[0_12px_28px_-10px_rgba(0,0,0,0.45)] transition-all duration-300 ${
               bubblePlacement === 'up'
                 ? 'translate-x-4 -translate-y-[calc(100%+8px)] rounded-[16px_16px_16px_6px]'
                 : bubblePlacement === 'left'
@@ -251,7 +251,7 @@ export function GuidedCursor({ onLook, onReleaseGaze }: GuidedCursorProps) {
             </span>
 
             {isTalking && (
-              <div className="mt-1.5 w-full font-mono text-[12.5px] leading-relaxed whitespace-normal break-words">
+              <div className="mt-1.5 w-full font-mono text-[12.5px] leading-relaxed whitespace-normal wrap-break-word">
                 <span>{bubbleText}</span>
                 {isTyping && (
                   <span className="inline-block h-3.5 w-1 bg-current ml-1 animate-pulse align-middle" />
