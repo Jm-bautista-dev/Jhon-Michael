@@ -16,41 +16,27 @@ interface CommunityChatOverlayProps {
   onClose: () => void
 }
 
-const INITIAL_MESSAGES: ChatMessage[] = [
-  {
-    id: '1',
-    name: 'Bryl Lim',
-    message: 'welcome to the site! say hi or leave a message 🙌',
-    time: '2h ago',
-    avatarSeed: 'Bryl',
-    location: 'Metro Manila 🇵🇭',
-  },
-  {
-    id: '2',
-    name: 'Alex D.',
-    message: 'Maki Desu POS looks super clean! Great architecture.',
-    time: '1h ago',
-    avatarSeed: 'Alex',
-    location: 'Singapore 🇸🇬',
-  },
-  {
-    id: '3',
-    name: 'Maria Santos',
-    message: 'Love the minimalist monochrome look! Congrats on the CCSLYMPICS win 🏆',
-    time: '35m ago',
-    avatarSeed: 'Maria',
-    location: 'Laguna 🇵🇭',
-  },
-]
+const DUMMY_IDS = new Set(['1', '2', '3'])
+const DUMMY_NAMES = new Set(['Bryl Lim', 'Alex D.', 'Maria Santos'])
 
 export function CommunityChatOverlay({ isOpen, onClose }: CommunityChatOverlayProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     try {
       const saved = localStorage.getItem('portfolio_chat_messages')
-      return saved ? JSON.parse(saved) : INITIAL_MESSAGES
+      if (saved) {
+        const parsed: ChatMessage[] = JSON.parse(saved)
+        const actual = parsed.filter(
+          (m) => !DUMMY_IDS.has(m.id) && !DUMMY_NAMES.has(m.name)
+        )
+        if (actual.length !== parsed.length) {
+          localStorage.setItem('portfolio_chat_messages', JSON.stringify(actual))
+        }
+        return actual
+      }
+      return []
     } catch (e) {
       void e
-      return INITIAL_MESSAGES
+      return []
     }
   })
   const [name, setName] = useState(() => {
@@ -160,25 +146,37 @@ export function CommunityChatOverlay({ isOpen, onClose }: CommunityChatOverlayPr
 
         {/* Message list */}
         <div className="flex-1 space-y-4 overflow-y-auto py-4 pr-1">
-          {messages.map((m) => (
-            <div key={m.id} className="flex items-start gap-3">
-              <img
-                src={`https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(m.avatarSeed)}&radius=50&backgroundColor=f1f1f1`}
-                alt=""
-                className="h-8 w-8 shrink-0 rounded-full bg-gray-100 border border-gray-200 dark:border-white/10"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline gap-1.5 font-mono text-[11px]">
-                  <span className="font-semibold text-black dark:text-white truncate">{m.name}</span>
-                  {m.location && <span className="text-gray-400">· {m.location}</span>}
-                  <span className="text-gray-400">· {m.time}</span>
-                </div>
-                <div className="mt-1 inline-block rounded-xl rounded-tl-sm bg-gray-100 dark:bg-white/10 px-3.5 py-2 text-[13px] text-black dark:text-white leading-relaxed">
-                  {m.message}
+          {messages.length === 0 ? (
+            <div className="flex h-36 flex-col items-center justify-center text-center text-gray-400">
+              <svg className="mb-2 h-6 w-6 opacity-40" viewBox="0 0 24 24" fill="none">
+                <path d="M4 5.5h16v10H10l-4.5 4v-4H4z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                <circle cx="9" cy="10.5" r=".9" fill="currentColor" />
+                <circle cx="12" cy="10.5" r=".9" fill="currentColor" />
+                <circle cx="15" cy="10.5" r=".9" fill="currentColor" />
+              </svg>
+              <p className="font-mono text-xs">no messages yet — say hi 👋</p>
+            </div>
+          ) : (
+            messages.map((m) => (
+              <div key={m.id} className="flex items-start gap-3">
+                <img
+                  src={`https://api.dicebear.com/9.x/notionists/svg?seed=${encodeURIComponent(m.avatarSeed)}&radius=50&backgroundColor=f1f1f1`}
+                  alt=""
+                  className="h-8 w-8 shrink-0 rounded-full bg-gray-100 border border-gray-200 dark:border-white/10"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline gap-1.5 font-mono text-[11px]">
+                    <span className="font-semibold text-black dark:text-white truncate">{m.name}</span>
+                    {m.location && <span className="text-gray-400">· {m.location}</span>}
+                    <span className="text-gray-400">· {m.time}</span>
+                  </div>
+                  <div className="mt-1 inline-block rounded-xl rounded-tl-sm bg-gray-100 dark:bg-white/10 px-3.5 py-2 text-[13px] text-black dark:text-white leading-relaxed">
+                    {m.message}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
           <div ref={messagesEndRef} />
         </div>
 
