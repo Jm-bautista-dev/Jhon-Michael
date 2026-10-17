@@ -6,5 +6,7 @@ export function certificatePath(filename: string) {
 }
 
 export function isPdfAsset(url: string) {
-  return url.toLowerCase().split('?')[0].endsWith('.pdf')
+  if (!url) return false
+  const clean = url.toLowerCase().split('?')[0].split('#')[0]
+  return clean.endsWith('.pdf')
 }

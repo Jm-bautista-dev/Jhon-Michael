@@ -73,7 +73,11 @@ export function CertificatePreview({ certification }: CertificatePreviewProps) {
       >
         {!loaded && <CertificateSkeleton className="absolute inset-2 sm:inset-4" />}
 
-        {isPdf ? (
+        {!previewSrc ? (
+          <div className="flex flex-col items-center justify-center p-8 text-center text-muted">
+            <p className="text-sm">Preview document unavailable</p>
+          </div>
+        ) : isPdf ? (
           <motion.iframe
             key={previewSrc}
             src={`${previewSrc}#view=FitH&toolbar=0`}
@@ -103,6 +107,7 @@ export function CertificatePreview({ certification }: CertificatePreviewProps) {
             animate={{ opacity: loaded ? 1 : 0 }}
             transition={{ duration: 0.35, ease: easeOut }}
             onLoad={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
             className={cn(
               'max-h-[min(70vh,520px)] w-auto max-w-full rounded-lg object-contain shadow-md ring-1 ring-border/60',
               !loaded && 'invisible absolute h-0 w-0',

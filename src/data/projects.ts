@@ -176,11 +176,10 @@ const rawProjects: Project[] = [
     tagline: 'A structured developer portfolio showcasing real projects, client work, and technical growth',
     images: [
       '/projects/v1hero.jpg',
-      '/projects/v1about.jpg',
       '/projects/v1services.jpg',
       '/projects/v1skills.jpg',
       '/projects/v1projects.jpg',
-      '/projects/v1contact.jpg',
+      '/projects/v1contacts.jpg',
     ],
     features: [
       'Single-page responsive portfolio layout',
