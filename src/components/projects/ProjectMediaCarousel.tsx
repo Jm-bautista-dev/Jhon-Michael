@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { easeOut } from '../../lib/motion'
 import { cn } from '../../lib/cn'
+import { getAssetUrl } from '../../lib/assets'
 
 interface ProjectMediaCarouselProps {
   images: string[]
@@ -53,16 +54,7 @@ export function ProjectMediaCarousel({ images, alt, autoPlay = false }: ProjectM
 
   const current = images[index]
 
-  const getImageUrl = (path: string) => {
-    if (!path) return ''
-    if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) {
-      return path
-    }
-    const cleanPath = path.startsWith('/') ? path.slice(1) : path
-    const base = import.meta.env.BASE_URL
-    const formattedBase = base.endsWith('/') ? base : `${base}/`
-    return `${formattedBase}${cleanPath}`
-  }
+  const getImageUrl = (path: string) => getAssetUrl(path)
 
   return (
     <>

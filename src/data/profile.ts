@@ -5,6 +5,7 @@ import type {
   Recommendation,
   SkillCategory,
 } from '../types'
+import { getAssetUrl } from '../lib/assets'
 
 export { allProjects, recentProjects } from './projects'
 export { certifications } from './certifications'
@@ -14,7 +15,7 @@ export const profile: Profile = {
   title: 'AI \\ Web Developer \\ Freelancer',
   location: 'Laguna, Philippines',
   tagline: 'AI \\ Web Developer \\ Freelancer',
-  avatar: 'Avatar/myavatar.jpg',
+  avatar: getAssetUrl('Avatar/myavatar.jpg'),
   status: 'available',
   statusLabel: 'Open to opportunities',
   highlightBadge: '2nd Place Winner - Cybersecurity CCSLYMPICS 2026',

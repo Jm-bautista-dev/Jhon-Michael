@@ -20,6 +20,7 @@ import { ResourcesModal } from '../modals/ResourcesModal'
 import { CertificationModal } from '../certifications/CertificationModal'
 import type { Certification } from '../../types'
 import { soundManager } from '../../lib/sounds'
+import { getAssetUrl } from '../../lib/assets'
 
 export function DashboardLayout() {
   const [isEmailOpen, setIsEmailOpen] = useState(false)
@@ -120,7 +121,7 @@ export function DashboardLayout() {
               {/* Photo Column with 3D Gaze */}
               <div className="reveal d1 mx-auto w-full max-w-[18rem] sm:mx-0">
                 <ProfileGaze
-                  avatarSrc={`/${profile.avatar}`}
+                  avatarSrc={getAssetUrl(profile.avatar)}
                   name={profile.name}
                   guidePos={guidePos}
                 />

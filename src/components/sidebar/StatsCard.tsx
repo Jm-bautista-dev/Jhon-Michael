@@ -3,6 +3,7 @@ import type { Profile } from '../../types'
 import { sidebarFloat } from '../../lib/motion'
 import { Card } from '../ui/Card'
 import { cn } from '../../lib/cn'
+import { getAssetUrl } from '../../lib/assets'
 
 interface StatsCardProps {
   profile: Profile
@@ -20,7 +21,7 @@ export function StatsCard({ profile }: StatsCardProps) {
       <Card className="space-y-4">
         <div className="flex items-center gap-3">
           <img
-            src={profile.avatar}
+            src={getAssetUrl(profile.avatar)}
             alt=""
             className="h-12 w-12 rounded-xl border border-border object-cover"
           />

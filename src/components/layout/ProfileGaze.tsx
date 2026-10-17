@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { getAssetUrl } from '../../lib/assets'
 
 interface ProfileGazeProps {
   avatarSrc: string
@@ -66,7 +67,7 @@ export function ProfileGaze({ avatarSrc, name, guidePos }: ProfileGazeProps) {
         className="relative overflow-hidden rounded-2xl border border-gray-200/80 bg-gray-50 shadow-md dark:border-white/10 dark:bg-white/5 transition-shadow duration-300 group-hover:shadow-xl will-change-transform"
       >
         <img
-          src={avatarSrc}
+          src={getAssetUrl(avatarSrc)}
           alt={name}
           width={400}
           height={400}

@@ -3,6 +3,7 @@ import { ZoomIn, ZoomOut } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import type { Certification } from '../../types'
 import { isPdfAsset } from '../../lib/certificates'
+import { getAssetUrl } from '../../lib/assets'
 import { easeOut } from '../../lib/motion'
 import { cn } from '../../lib/cn'
 import { CertificateSkeleton } from './CertificateSkeleton'
@@ -14,7 +15,8 @@ interface CertificatePreviewProps {
 }
 
 export function CertificatePreview({ certification }: CertificatePreviewProps) {
-  const previewSrc = certification.image ?? certification.pdf
+  const rawSrc = certification.image ?? certification.pdf
+  const previewSrc = rawSrc ? getAssetUrl(rawSrc) : ''
   const isPdf = isPdfAsset(previewSrc)
 
   const [loaded, setLoaded] = useState(false)

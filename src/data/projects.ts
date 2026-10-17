@@ -1,6 +1,7 @@
 import type { Project } from '../types'
+import { getAssetUrl } from '../lib/assets'
 
-export const allProjects: Project[] = [
+const rawProjects: Project[] = [
   {
     id: '5',
     name: 'Maki Desu – POS & Inventory Management System',
@@ -226,5 +227,10 @@ export const allProjects: Project[] = [
     ],
   },
 ]
+
+export const allProjects: Project[] = rawProjects.map((p) => ({
+  ...p,
+  images: p.images.map((img) => getAssetUrl(img)),
+}))
 
 export const recentProjects = allProjects.slice(0, 4)

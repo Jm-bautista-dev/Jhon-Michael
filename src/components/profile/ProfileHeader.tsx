@@ -1,6 +1,7 @@
 import { Calendar, Mail, MapPin, Trophy } from 'lucide-react'
 import type { Profile } from '../../types'
 import { ThemeToggle } from '../layout/ThemeToggle'
+import { getAssetUrl } from '../../lib/assets'
 
 interface ProfileHeaderProps {
   profile: Profile
@@ -15,7 +16,7 @@ export function ProfileHeader({ profile, onContactClick }: ProfileHeaderProps) {
         <div className="relative shrink-0 mx-auto md:mx-0">
           <div className="rounded-lg w-40 h-40 object-cover overflow-hidden bg-zinc-200 dark:bg-zinc-800 border border-border/80">
             <img
-              src={profile.avatar}
+              src={getAssetUrl(profile.avatar)}
               alt={profile.name}
               className="w-full h-full object-cover"
               onError={(e) => {

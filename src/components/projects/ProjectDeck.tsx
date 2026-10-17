@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { soundManager } from '../../lib/sounds'
+import { getAssetUrl } from '../../lib/assets'
 
 interface DeckProject {
   id: string
@@ -18,7 +19,7 @@ const DECK_PROJECTS: DeckProject[] = [
     title: 'Maki Desu – POS & Inventory',
     badge: '#1 POS & Analytics System',
     tags: ['Full-Stack', 'MySQL'],
-    icon: '/projects/landingpage.jpg',
+    icon: getAssetUrl('/projects/landingpage.jpg'),
     description: 'An offline & cloud-ready POS & inventory management system with real-time stock tracking and business analytics.',
     liveUrl: 'https://makidesuoperation.site/',
     githubUrl: 'https://github.com/Jm-bautista-dev/Updated-Capstone-Project',
@@ -28,7 +29,7 @@ const DECK_PROJECTS: DeckProject[] = [
     title: 'DANCRISM&S – Minerals',
     badge: '#1 Client Showcase',
     tags: ['E-Commerce Catalog'],
-    icon: '/projects/wixhero.jpg',
+    icon: getAssetUrl('/projects/wixhero.jpg'),
     description: 'A clean digital showcase presenting minerals and natural stones with interactive product discovery.',
     liveUrl: 'https://jmbautistaa0428.wixsite.com/mysite',
   },
@@ -37,7 +38,7 @@ const DECK_PROJECTS: DeckProject[] = [
     title: 'Attendo – Attendance System',
     badge: '#1 Campus System',
     tags: ['Flask + PHP'],
-    icon: '/projects/login.jpg',
+    icon: getAssetUrl('/projects/login.jpg'),
     description: 'Full-stack employee and student attendance tracker with biometric logging, database security, and reporting dashboards.',
     liveUrl: 'https://github.com/Jm-bautista-dev',
     githubUrl: 'https://github.com/Jm-bautista-dev',
@@ -111,7 +112,7 @@ export function ProjectDeck() {
             {/* App Icon + Title */}
             <div className="mt-4 flex items-center gap-3.5">
               <img
-                src={proj.icon}
+                src={getAssetUrl(proj.icon)}
                 alt=""
                 className="h-12 w-12 shrink-0 rounded-xl border border-gray-200 object-cover shadow-sm dark:border-white/10"
               />
